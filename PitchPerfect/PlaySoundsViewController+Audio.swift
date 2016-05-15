@@ -4,10 +4,12 @@
 //
 //  Copyright © 2016 Udacity. All rights reserved.
 //
+
 import UIKit
 import AVFoundation
 
 extension PlaySoundsViewController: AVAudioPlayerDelegate {
+
     struct Alerts {
         static let DismissAlert = "Dismiss"
         static let RecordingDisabledTitle = "Recording Disabled"
@@ -20,26 +22,21 @@ extension PlaySoundsViewController: AVAudioPlayerDelegate {
         static let AudioFileError = "Audio File Error"
         static let AudioEngineError = "Audio Engine Error"
     }
-    
-    // raw values correspond to sender tags
+
     enum PlayingState { case Playing, NotPlaying }
 
     
     // MARK: Audio Functions
     
     func setupAudio() {
-        // initialize (recording) audio file
         do {
             audioFile = try AVAudioFile(forReading: recordedAudioURL)
         } catch {
             showAlert(Alerts.AudioFileError, message: String(error))
         }
-        print("Audio has been setup")
     }
     
     func playSound(rate rate: Float? = nil, pitch: Float? = nil, echo: Bool = false, reverb: Bool = false) {
-        
-        // initialize audio engine components
         audioEngine = AVAudioEngine()
         
         // node for playing audio
@@ -94,7 +91,7 @@ extension PlaySoundsViewController: AVAudioPlayerDelegate {
             }
             
             // schedule a stop timer for when audio finishes playing
-            self.stopTimer = NSTimer(timeInterval: delayInSeconds, target: self, selector: "stopAudio", userInfo: nil, repeats: false)
+            self.stopTimer = NSTimer(timeInterval: delayInSeconds, target: self, selector: #selector(PlaySoundsViewController.stopAudio), userInfo: nil, repeats: false)
             NSRunLoop.mainRunLoop().addTimer(self.stopTimer!, forMode: NSDefaultRunLoopMode)
         }
         
@@ -104,13 +101,9 @@ extension PlaySoundsViewController: AVAudioPlayerDelegate {
             showAlert(Alerts.AudioEngineError, message: String(error))
             return
         }
-        
-        // play the recording!
+
         audioPlayerNode.play()
     }
-    
-    
-    // MARK: Connect List of Audio Nodes
     
     func connectAudioNodes(nodes: AVAudioNode...) {
         for x in 0..<nodes.count-1 {
@@ -119,7 +112,6 @@ extension PlaySoundsViewController: AVAudioPlayerDelegate {
     }
     
     func stopAudio() {
-        
         if let stopTimer = stopTimer {
             stopTimer.invalidate()
         }
@@ -135,8 +127,8 @@ extension PlaySoundsViewController: AVAudioPlayerDelegate {
             audioEngine.reset()
         }
     }
-    
-    
+
+
     // MARK: UI Functions
 
     func configureUI(playState: PlayingState) {
@@ -152,28 +144,16 @@ extension PlaySoundsViewController: AVAudioPlayerDelegate {
     
     func setPlayButtonsEnabled(enabled: Bool) {
         snailButton.enabled = enabled
-        chipmunkButton.enabled = enabled
         rabbitButton.enabled = enabled
+        chipmunkButton.enabled = enabled
         darthVaderButton.enabled = enabled
         echoButton.enabled = enabled
         reverbButton.enabled = enabled
     }
 
-    
     func showAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: Alerts.DismissAlert, style: .Default, handler: nil))
         self.presentViewController(alert, animated: true, completion: nil)
     }
-
-    
 }
-
-
-
-
-
-
-
-
-
