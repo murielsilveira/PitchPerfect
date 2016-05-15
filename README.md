@@ -1,6 +1,6 @@
 ## PitchPerfect
 
-PitchPerfect is an app that allows you to record your voice and play it back with sound effects.
+PitchPerfect is an iOS app that allows you to record your voice and play it back with sound effects.
 
 The effects are:
   - Slow
